@@ -1,0 +1,3 @@
+[deps]
+DetectAlpha = "2a04ccd2-9adb-4fac-ae12-f23e4991d00f"
+Documenter = "e30172f5-a6a5-5a46-863b-614d45cd2de4"
