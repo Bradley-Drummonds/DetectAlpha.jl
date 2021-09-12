@@ -20,6 +20,7 @@ end
 
 get_iso_row(z::Int,elems::Elements) = elems.file[elems.file.AtomicNumber .== z,:]
 get_iso_row(z::Int) = get_iso_row(z,Elements())
+get_iso_row(symbol::String,elems::Elements) = elems.file[elems.file.Symbol .== symbol,:] 
 
 struct Isotope
     Z
@@ -53,4 +54,28 @@ struct Isotope
         new(z,a,sym,nme,active)
     end
 end
+
+# abstract type Spectrum end
+# find_peak(s::Spectrum) = []
+# slice(s::Spectrum) = Spectrum()
+
+# struct AlphaSpectrum <: Spectrum
+#     channels::Vector{Int}
+#     energies::Vector{Float64}
+#     function AlphaSpectrum()
+#         chs = zeros(Int32,1024)
+#         e = zeros(1024)
+#         new(chs,e)
+#     end
+#     function AlphaSpectrum(row::DataFrameRow)
+#         numChannels = length(row)
+#         @show numChannels
+#         chs = [row[i] for i=4:numChannels]
+#         RANGE_MEV = 10_000_000; 
+#         b = convert(Float64,RANGE_MEV) / convert(Float64,numChannels)
+#         es = [b * i for i=1:numChannels-3]
+#         new(chs,es)
+#     end
+# end
+
 end
