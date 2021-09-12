@@ -3,6 +3,9 @@ uuid = "2a04ccd2-9adb-4fac-ae12-f23e4991d00f"
 authors = ["Brad D"]
 version = "0.1.0"
 
+[deps]
+CSV = "336ed68f-0bac-5ca0-87d4-7b16caf5d00b"
+
 [compat]
 julia = "1"
 
