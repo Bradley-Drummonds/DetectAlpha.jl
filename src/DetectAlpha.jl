@@ -91,4 +91,21 @@ struct AlphaSpectrum <: Spectrum
     end
 end
 
+# abstract type SpectrumSource end 
+# get_spectra(source::SpectrumSource) = Vector{Spectrum}
+# alphaDataFrame = CSV.File("/home/b/Data/Spectra/Alpha2.csv"; header=false) |> DataFrame
+function read_alpha_spectrum_file(file)
+    frame = CSV.File(file; header=false) |> DataFrame
+    num_rows = nrow(frame)
+    ret_alpha_spects = [AlphaSpectrum(frame[i,:]) for i in 1:num_rows]
+    #Vector{AlphaSpectrum}(undef,num_rows)
+    
+    # for rows in eachrow(frame)
+# 
+    # end
+
+    # ret_alpha_spects = collect(AlphaSpectrum, eachrow(frame))
+    return ret_alpha_spects
+end
+
 end
