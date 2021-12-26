@@ -8,6 +8,11 @@ include("../src/Utils.jl")
     elemens = Elements()
     plutrow = DetectAlpha.get_iso_row(94,elemens) 
     @test plutrow !== nothing
+
+    spectra = DetectAlpha.read_alpha_spectrum_file("/home/b/Data/Spectra/Alpha2.csv")
+    @test spectra !== nothing
+    sizespectra = size(spectra)
+    @show sizespectra
 end
 
 @testset "Utils.jl" begin
