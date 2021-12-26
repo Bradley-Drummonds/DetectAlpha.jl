@@ -11,8 +11,9 @@ include("../src/Utils.jl")
 
     spectra = DetectAlpha.read_alpha_spectrum_file("/home/b/Data/Spectra/Alpha2.csv")
     @test spectra !== nothing
-    sizespectra = size(spectra)
-    @show sizespectra
+
+    alphaspectrum = first(spectra)
+    @test alphaspectrum.numchannels == 512
 end
 
 @testset "Utils.jl" begin

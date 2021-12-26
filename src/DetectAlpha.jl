@@ -75,19 +75,23 @@ slice(s::Spectrum) = Spectrum()
 struct AlphaSpectrum <: Spectrum
     channels::Vector{Int}
     energies::Vector{Float64}
+    numchannels::Int32
     function AlphaSpectrum()
         chs = zeros(Int32,1024)
         e = zeros(1024)
-        new(chs,e)
+        numchs = 512
+        new(chs,e,512)
     end
     function AlphaSpectrum(row::DataFrameRow)
-        numChannels = length(row)
-        @show numChannels
-        chs = [row[i] for i=4:numChannels]
+        numcolumns = length(row)
+        @show numcolumns
+        indexfirstch = 4
+        numchs = numcolumns - indexfirstch + 1
+        chs = [row[i] for i=indexfirstch:numcolumns]
         RANGE_MEV = 10_000_000; 
-        b = convert(Float64,RANGE_MEV) / convert(Float64,numChannels)
-        es = [b * i for i=1:numChannels-3]
-        new(chs,es)
+        b = convert(Float64,RANGE_MEV) / convert(Float64,numcolumns)
+        es = [b * i for i=1:numcolumns-3]
+        new(chs,es,numchs)
     end
 end
 
