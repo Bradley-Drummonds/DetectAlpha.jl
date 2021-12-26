@@ -5,6 +5,9 @@ include("../src/Utils.jl")
 @testset "DetectAlpha.jl" begin
     # Write your tests here.
     @test π ≈ 3.14 atol=0.01
+    elemens = Elements()
+    plutrow = DetectAlpha.get_iso_row(94,elemens) 
+    @test plutrow !== nothing
 end
 
 @testset "Utils.jl" begin
