@@ -18,7 +18,6 @@ struct Elements
     file
     Elements() = new(CSV.File("/home/b/Data/Elements.csv"))
 end
-
 get_iso_row(z::Int,elems::Elements) = elems.file[elems.file.AtomicNumber .== z,:]
 get_iso_row(z::Int) = get_iso_row(z,Elements())
 get_iso_row(symbol::String,elems::Elements) = elems.file[elems.file.Symbol .== symbol,:] 
@@ -72,16 +71,21 @@ abstract type Spectrum end
 find_peak(s::Spectrum) = []
 slice(s::Spectrum) = Spectrum()
 
+"alpha energy spectrum"
 struct AlphaSpectrum <: Spectrum
     channels::Vector{Int}
     energies::Vector{Float64}
     numchannels::Int32
+
+    "constructor for default AlphaSpectrum"
     function AlphaSpectrum()
         chs = zeros(Int32,1024)
         e = zeros(1024)
         numchs = 512
         new(chs,e,512)
     end
+
+    "alpha spectrum from a DataFrameRow instance"
     function AlphaSpectrum(row::DataFrameRow)
         numcolumns = length(row)
         @show numcolumns
@@ -98,17 +102,12 @@ end
 # abstract type SpectrumSource end 
 # get_spectra(source::SpectrumSource) = Vector{Spectrum}
 # alphaDataFrame = CSV.File("/home/b/Data/Spectra/Alpha2.csv"; header=false) |> DataFrame
+# return array of alpha spectra
+"read and return an array of alpha spectra from a CSV file"
 function read_alpha_spectrum_file(file)
     frame = CSV.File(file; header=false) |> DataFrame
-    num_rows = nrow(frame)
+    num_rows = DataAPI.nrow(frame)
     ret_alpha_spects = [AlphaSpectrum(frame[i,:]) for i in 1:num_rows]
-    #Vector{AlphaSpectrum}(undef,num_rows)
-    
-    # for rows in eachrow(frame)
-# 
-    # end
-
-    # ret_alpha_spects = collect(AlphaSpectrum, eachrow(frame))
     return ret_alpha_spects
 end
 
