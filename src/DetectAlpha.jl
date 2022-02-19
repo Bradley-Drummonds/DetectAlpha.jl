@@ -2,6 +2,8 @@ module DetectAlpha
 
 using CSV
 using DataFrames
+using RadiationSpectra
+
 include("Utils.jl")
 
 export Radiation, Elements, Isotope
@@ -110,5 +112,7 @@ function read_alpha_spectrum_file(file)
     ret_alpha_spects = [AlphaSpectrum(frame[i,:]) for i in 1:num_rows]
     return ret_alpha_spects
 end
+
+function find_peak(as::AlphaSpectrum)
 
 end

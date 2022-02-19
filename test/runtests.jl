@@ -14,6 +14,8 @@ include("../src/Utils.jl")
 
     alphaspectrum = first(spectra)
     @test alphaspectrum.numchannels == 512
+
+    
 end
 
 @testset "Utils.jl" begin
