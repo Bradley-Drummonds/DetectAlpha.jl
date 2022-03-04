@@ -52,7 +52,8 @@ function read_alpha_spectrum_file(file)
     return ret_alpha_spects
 end
 
-function find_peak(as::AlphaSpectrum)
+"detect peaks in a alpha spectrum"
+function find_peaks(as::AlphaSpectrum)
     println("find an alpha peak in spectrum ",as)
 end
 
