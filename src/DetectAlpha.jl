@@ -8,6 +8,4 @@ include("Utils.jl")
 include("Isotope.jl")
 include("Spectrum.jl")
 
-
-
 end #end module DetectAlpha

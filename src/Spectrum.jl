@@ -2,7 +2,7 @@ abstract type Spectrum end
 find_peak(s::Spectrum) = []
 slice(s::Spectrum) = Spectrum()
 
-"alpha energy spectrum"
+"""spectrum from a solid state sensor"""
 struct AlphaSpectrum <: Spectrum
     channels::Vector{Int}
     energies::Vector{Float64}
@@ -34,7 +34,7 @@ end
 # get_spectra(source::SpectrumSource) = Vector{Spectrum}
 # alphaDataFrame = CSV.File("/home/b/Data/Spectra/Alpha2.csv"; header=false) |> DataFrame
 # return array of alpha spectra
-"read and return an array of alpha spectra from a CSV file"
+"""read and return an array of alpha spectra from a CSV file"""
 function read_alpha_spectrum_file(file)
     frame = CSV.File(file; header=false) |> DataFrame
     num_rows = nrow(frame)
