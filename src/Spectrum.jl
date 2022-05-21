@@ -1,5 +1,8 @@
+export find_peaks
+
 abstract type Spectrum end
 find_peak(s::Spectrum) = []
+
 slice(s::Spectrum) = Spectrum()
 
 """spectrum from a solid state sensor"""

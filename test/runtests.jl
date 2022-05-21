@@ -15,6 +15,9 @@ include("../src/Utils.jl")
     alphaspectrum = first(spectra)
     @test alphaspectrum.numchannels == 512
 
+    for spectrum in spectra
+        find_peaks(spectrum)
+    end
     
 end
 
