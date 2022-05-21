@@ -9,7 +9,7 @@ include("../src/Utils.jl")
     plutrow = DetectAlpha.get_iso_row(94,elemens) 
     @test plutrow !== nothing
 
-    spectra = DetectAlpha.read_alpha_spectrum_file("/home/b/Data/Spectra/Alpha2.csv")
+    spectra = DetectAlpha.read_alpha_spectrum_file("../Alpha2.csv")
     @test spectra !== nothing
 
     alphaspectrum = first(spectra)

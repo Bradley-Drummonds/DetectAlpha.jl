@@ -12,7 +12,7 @@ end
 
 struct Elements
     file
-    Elements() = new(CSV.File("/home/b/Data/Elements.csv"))
+    Elements() = new(CSV.File("../Elements.csv"))
 end
 get_iso_row(z::Int,elems::Elements) = elems.file[elems.file.AtomicNumber .== z,:]
 get_iso_row(z::Int) = get_iso_row(z,Elements())
