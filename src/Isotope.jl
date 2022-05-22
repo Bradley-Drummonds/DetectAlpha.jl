@@ -63,4 +63,3 @@ function decay!(iso::Isotope,radType::DecayType)
     return newIso
 end
 
-
