@@ -29,3 +29,10 @@ end
     @test between2and8(5//2) == true
     @test between2and8(4//2) == false
 end
+
+@testset "AlphaSpectrum" begin
+    as = AlphaSpectrum.example_alpha_spectrum()   
+    @test as !== nothing
+    hs = AlphaSpectrum.to_histogram(as)
+    @test hs !== nothing
+end

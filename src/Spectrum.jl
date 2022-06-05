@@ -1,9 +1,14 @@
+export Spectrum, AlphaSpectrum
 export AlphaSpectrum
+export example_alpha_spectrum, to_histogram
 
 abstract type Spectrum end
 find_peak(s::Spectrum) = []
-
 slice(s::Spectrum) = Spectrum()
+to_histogram(s::Spectrum) = nothing
+
+@static if @isdefined(DEBUG) || @isdefined(TEST) ALPHA_SPECTRUM_TEST_FILE = "Alpha2.csv" end
+
 
 """spectrum from a solid state sensor"""
 struct AlphaSpectrum <: Spectrum
@@ -43,5 +48,16 @@ function read_alpha_spectrum_file(file)
     num_rows = nrow(frame)
     ret_alpha_spects = [AlphaSpectrum(frame[i,:]) for i in 1:num_rows]
     return ret_alpha_spects
+end
+
+function to_histogram(as::AlphaSpectrum)
+    len = as.numchannels;
+    edges = collect(1:len)
+    return hist = StatsBase.Histogram(edges,as.channels)
+end
+
+function example_alpha_spectrum()
+    asdatafile = joinpath(DetectAlpha.TEST_DATA_FOLDER,ALPHA_SPECTRUM_TEST_FILE)
+    return read_alpha_spectrum_file(asdatafile)
 end
 

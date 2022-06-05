@@ -1,5 +1,6 @@
 module DetectAlpha
 export find_peak,find_peaks,alphamodel
+
 using CSV
 using DataFrames
 using RadiationSpectra
@@ -10,7 +11,7 @@ include("Utils.jl")
 include("Isotope.jl")
 include("Spectrum.jl")
 
-
+@static if @isdefined(DEBUG) || @isdefined(TEST) TEST_DATA_FOLDER = "/home/b/Data/Spectra" end
 function find_peak(iso::Isotope,as::AlphaSpectrum)
 end
 
