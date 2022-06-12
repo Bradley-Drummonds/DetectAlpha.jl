@@ -10,6 +10,10 @@ include("Utils.jl")
 include("Isotope.jl")
 include("Spectrum.jl")
 
+struct Peak
+    range
+    channel
+end
 
 function find_peak(iso::Isotope,as::AlphaSpectrum)
 end
