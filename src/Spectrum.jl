@@ -52,7 +52,7 @@ end
 
 function to_histogram(as::AlphaSpectrum)
     len = as.numchannels;
-    edges = collect(1:len)
+    edges = collect(1:len+1)
     return hist = StatsBase.Histogram(edges,as.channels)
 end
 

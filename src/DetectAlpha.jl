@@ -7,6 +7,9 @@ using RadiationSpectra
 using StatsBase
 using Plots
 
+TEST = true
+DEBUG = true
+
 include("Utils.jl")
 include("Isotope.jl")
 include("Spectrum.jl")

@@ -1,5 +1,6 @@
 using DetectAlpha
 using Test
+using Revise
 include("../src/Utils.jl")
 
 @testset "DetectAlpha.jl" begin
@@ -31,8 +32,9 @@ end
 end
 
 @testset "AlphaSpectrum" begin
-    as = AlphaSpectrum.example_alpha_spectrum()   
-    @test as !== nothing
-    hs = AlphaSpectrum.to_histogram(as)
+    alphaspectra = DetectAlpha.example_alpha_spectrum()   
+    @test length(alphaspectra) >= 1
+    spectrum = first(alphaspectra)
+    hs = DetectAlpha.to_histogram(spectrum)
     @test hs !== nothing
 end
