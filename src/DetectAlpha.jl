@@ -25,10 +25,14 @@ find a peak within a certain channel range of a AlphaSpectrum
 """
 function find_peak(channelrange::StepRange,as::AlphaSpectrum)
     #get the channels from the range
-    channels = collect(channelrange)
 
-    if issubset(channels,as.channels)
+    @show last(channelrange)
+    @show length(as.channels)
+
+    if last(channelrange) <= length(as.channels) #issubset(channels,as.channels)
         println("channelrange is within alpha spectrum channel arrays") 
+        v = view(as.channels)
+        return 
     else
         throw(BoundsError())
     end
@@ -38,7 +42,7 @@ end
 detect peaks in a alpha spectrum
 """
 function find_peaks(as::AlphaSpectrum,model = alphamodel,params = [256.0,15.0,4.2,10000.0])
-    println("find an alpha peak in spectrum ",as)
+    # println("find an alpha peak in spectrum ",as)
     #params = [256.0,15.0,4.2,10000.0]
 end
 
