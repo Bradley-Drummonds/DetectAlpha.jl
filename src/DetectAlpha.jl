@@ -15,6 +15,11 @@ include("Isotope.jl")
 include("Spectrum.jl")
 
 @static if @isdefined(DEBUG) || @isdefined(TEST) TEST_DATA_FOLDER = "/home/b/Data/Spectra" end
+struct Peak
+    range
+    channel
+end
+
 function find_peak(iso::Isotope,as::AlphaSpectrum)
 end
 
