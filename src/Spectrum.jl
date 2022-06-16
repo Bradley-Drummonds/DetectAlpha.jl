@@ -3,12 +3,12 @@ export AlphaSpectrum
 export example_alpha_spectrum, to_histogram
 
 abstract type Spectrum end
+
 find_peak(s::Spectrum) = []
 slice(s::Spectrum) = Spectrum()
 to_histogram(s::Spectrum) = nothing
 
 @static if @isdefined(DEBUG) || @isdefined(TEST) ALPHA_SPECTRUM_TEST_FILE = "Alpha2.csv" end
-
 
 """spectrum from a solid state sensor"""
 struct AlphaSpectrum <: Spectrum
@@ -27,7 +27,7 @@ struct AlphaSpectrum <: Spectrum
     "alpha spectrum from a DataFrameRow instance"
     function AlphaSpectrum(row::DataFrameRow)
         numcolumns = length(row)
-        @show numcolumns
+        # @show numcolumns
         indexfirstch = 4
         numchs = numcolumns - indexfirstch + 1
         chs = [row[i] for i=indexfirstch:numcolumns]

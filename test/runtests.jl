@@ -37,4 +37,6 @@ end
     spectrum = first(alphaspectra)
     hs = DetectAlpha.to_histogram(spectrum)
     @test hs !== nothing
+
+    @test_throws BoundsError find_peak(StepRange(1,1,5128),spectrum)
 end

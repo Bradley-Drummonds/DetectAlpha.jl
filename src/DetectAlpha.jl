@@ -15,12 +15,23 @@ include("Isotope.jl")
 include("Spectrum.jl")
 
 @static if @isdefined(DEBUG) || @isdefined(TEST) TEST_DATA_FOLDER = "/home/b/Data/Spectra" end
+
 struct Peak
     range
     channel
 end
+""" 
+find a peak within a certain channel range of a AlphaSpectrum
+"""
+function find_peak(channelrange::StepRange,as::AlphaSpectrum)
+    #get the channels from the range
+    channels = collect(channelrange)
 
-function find_peak(iso::Isotope,as::AlphaSpectrum)
+    if issubset(channels,as.channels)
+        println("channelrange is within alpha spectrum channel arrays") 
+    else
+        throw(BoundsError())
+    end
 end
 
 """
