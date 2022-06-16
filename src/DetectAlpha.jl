@@ -1,5 +1,5 @@
 module DetectAlpha
-export find_peak,find_peaks,alphamodel
+export find_peak,find_peaks,alphamodel,valid_peak
 
 using CSV
 using DataFrames
@@ -19,7 +19,14 @@ include("Spectrum.jl")
 struct Peak
     range
     channel
+    function Peak()
+        new(StepRange(typemin(Int32),Int32(1),typemax(Int32)),typemin(Int32))
+    end
 end
+
+valid_peak(pk1::Peak) = pk1.channel != typemin(Int32) && 
+    first(pk1.range) != typemin(Int32)
+
 """ 
 find a peak within a certain channel range of a AlphaSpectrum
 """
@@ -31,8 +38,10 @@ function find_peak(channelrange::StepRange,as::AlphaSpectrum)
 
     if last(channelrange) <= length(as.channels) #issubset(channels,as.channels)
         println("channelrange is within alpha spectrum channel arrays") 
-        v = view(as.channels)
-        return 
+        v = view(as.channels,channelrange)
+        @show v
+
+        return Peak() 
     else
         throw(BoundsError())
     end

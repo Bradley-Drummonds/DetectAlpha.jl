@@ -39,4 +39,6 @@ end
     @test hs !== nothing
 
     @test_throws BoundsError find_peak(StepRange(1,1,5128),spectrum)
+
+    @test !valid_peak(find_peak(StepRange(Int32(1),Int32(1),Int32(128)),spectrum)) 
 end
