@@ -33,8 +33,8 @@ find a peak within a certain channel range of a AlphaSpectrum
 function find_peak(channelrange::StepRange,as::AlphaSpectrum)
     #get the channels from the range
 
-    @show last(channelrange)
-    @show length(as.channels)
+    # @show last(channelrange)
+    # @show length(as.channels)
 
     if last(channelrange) <= length(as.channels) #issubset(channels,as.channels)
         println("channelrange is within alpha spectrum channel arrays") 
