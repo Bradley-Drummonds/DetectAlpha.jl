@@ -1,12 +1,13 @@
 export Spectrum, AlphaSpectrum
 export AlphaSpectrum
-export example_alpha_spectrum, to_histogram
+export example_alpha_spectrum, to_histogram,to_energy_linearrange
 
 abstract type Spectrum end
 
 find_peak(s::Spectrum) = []
 slice(s::Spectrum) = Spectrum()
 to_histogram(s::Spectrum) = nothing
+to_energy_linearrange(chsteprange::StepRange,energyrange::NamedTuple{(:max,:min)}) = nothing
 
 @static if @isdefined(DEBUG) || @isdefined(TEST) ALPHA_SPECTRUM_TEST_FILE = "Alpha2.csv" end
 
@@ -53,9 +54,24 @@ end
 function to_histogram(as::AlphaSpectrum)
     len = as.numchannels;
     edges = collect(1:len+1)
-    return hist = StatsBase.Histogram(edges,as.channels)
+    hist = StatsBase.Histogram(edges,as.channels)
+    @show hist
+    return hist
 end
-
+function get_sub_histogram(as::AlphaSpectrum) 
+        ashist = to_histogram(as)
+        startenergy = as.energies[channelrange.start]
+        endenergy = as.energies[channelrange.stop] 
+        energyrange = (min = startenergy,max = stopenergy)
+        linenergyrange = to_energy_linearrange(channelrange,energyrange)
+        RadiationSpectrn.subhist(ashist,linenergyrange)
+end
+function to_energy_linearrange(st::StepRange,energyrange::NamedTuple{(:min,:max)})
+    numchs = length(st)
+    startenergy = energyrange.min  
+    energystep = (energyrange.max - energyrange.min) / numchs
+    LinRange(startenergy,energyrange.max,numchs)
+end
 function example_alpha_spectrum()
     asdatafile = joinpath(DetectAlpha.TEST_DATA_FOLDER,ALPHA_SPECTRUM_TEST_FILE)
     return read_alpha_spectrum_file(asdatafile)
