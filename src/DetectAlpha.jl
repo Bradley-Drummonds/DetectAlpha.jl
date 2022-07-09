@@ -29,7 +29,7 @@ struct Peak
     end
 end
 
-struct AlphaSpectrumDensity{T} <: RadiationSpectra.AbstractSpectrumDensity{T}
+struct AlphaSpectrumDensity{T} <: RadiationSpectra.AbstractSpectrumDensity{T,1}
     μ::T
     σ::T
     τ::T
@@ -82,11 +82,12 @@ end
 
 
 """
-detect peaks in a alpha spectrum
+detect peaks in a alpha spectrum, using deconvolution
 """
-function find_peaks(as::AlphaSpectrum,model = alphamodel,params = [256.0,15.0,4.2,10000.0])
-    # println("find an alpha peak in spectrum ",as)
-    #params = [256.0,15.0,4.2,10000.0]
+function find_peaks(as::AlphaSpectrum)
+    h_alpha = to_histogram(as)
+    h_decon, peaks = RadiationSpectra.peakfinder(h_alpha) #using spectrum deconvolution
+    return peaks
 end
 
 
