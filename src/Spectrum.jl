@@ -62,7 +62,7 @@ function get_sub_histogram(as::AlphaSpectrum)
         ashist = to_histogram(as)
         startenergy = as.energies[channelrange.start]
         endenergy = as.energies[channelrange.stop] 
-        energyrange = (min = startenergy,max = stopenergy)
+        energyrange = (min = startenergy,max = endenergy)
         linenergyrange = to_energy_linearrange(channelrange,energyrange)
         RadiationSpectrn.subhist(ashist,linenergyrange)
 end
