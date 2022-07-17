@@ -32,13 +32,13 @@ end
 end
 
 @testset "AlphaSpectrum" begin
-    alphaspectra = DetectAlpha.example_alpha_spectrum()   
-    @test length(alphaspectra) >= 1
-    spectrum = first(alphaspectra)
-    hs = DetectAlpha.to_histogram(spectrum)
+    alphaspectrum = DetectAlpha.example_alpha_spectrum()   
+    hs = DetectAlpha.to_histogram(alphaspectrum)
     @test hs !== nothing
 
-    @test_throws BoundsError fit_peak_in_range(StepRange(1,1,5128),spectrum)
+    @test_throws BoundsError fit_peak_in_range(StepRange(1,1,5128),alphaspectrum)
 
-    @test !valid_peak(fit_peak_in_range(StepRange(Int32(1),Int32(1),Int32(128)),spectrum)) 
+    @test !valid_peak(fit_peak_in_range(StepRange(Int32(1),Int32(1),Int32(128)),alphaspectrum)) 
+
+
 end

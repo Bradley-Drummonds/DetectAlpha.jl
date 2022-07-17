@@ -74,6 +74,6 @@ function to_energy_linearrange(st::StepRange,energyrange::NamedTuple{(:min,:max)
 end
 function example_alpha_spectrum()
     asdatafile = joinpath(DetectAlpha.TEST_DATA_FOLDER,ALPHA_SPECTRUM_TEST_FILE)
-    return read_alpha_spectrum_file(asdatafile)
+    return first(read_alpha_spectrum_file(asdatafile))
 end
 
