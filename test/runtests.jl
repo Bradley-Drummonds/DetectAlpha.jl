@@ -16,9 +16,11 @@ include("../src/Utils.jl")
     alphaspectrum = first(spectra)
     @test alphaspectrum.numchannels == 512
 
-    for spectrum in spectra
-        find_peaks(spectrum)
-    end
+    # for spectrum in spectra
+    #     find_peaks(spectrum)
+    # # e
+    peaks = DetectAlpha.find_peaks(alphaspectrum)
+    @test length(peaks) > 0
     
 end
 
@@ -39,6 +41,4 @@ end
     @test_throws BoundsError fit_peak_in_range(StepRange(1,1,5128),alphaspectrum)
 
     @test !valid_peak(fit_peak_in_range(StepRange(Int32(1),Int32(1),Int32(128)),alphaspectrum)) 
-
-
 end

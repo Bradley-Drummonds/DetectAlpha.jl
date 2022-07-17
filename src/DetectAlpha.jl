@@ -59,7 +59,7 @@ function fit_peak_in_range(channelrange::StepRange,as::AlphaSpectrum)
     #get the channels from the range
 
     if last(channelrange) <= length(as.channels) #issubset(channels,as.channels)
-        println("channelrange is within alpha spectrum channel arrays") 
+        # println("channelrange is within alpha spectrum channel arrays") 
         # v = view(as.channels,channelrange)
         # @show v
         # set_initial_parameters!(fitfunc,( μ = 256.0, σ = 15.0, τ = 4.2, A = 10000.0))
@@ -86,7 +86,7 @@ detect peaks in a alpha spectrum, using deconvolution
 """
 function find_peaks(as::AlphaSpectrum)
     h_alpha = to_histogram(as)
-    h_decon, peaks = RadiationSpectra.peakfinder(h_alpha; σ=2.0) #using spectrum deconvolution
+    h_decon, peaks = RadiationSpectra.peakfinder(h_alpha; σ=20.0) #using spectrum deconvolution
     return peaks
 end
 

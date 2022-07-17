@@ -55,7 +55,7 @@ function to_histogram(as::AlphaSpectrum)
     len = as.numchannels;
     edges = collect(1:len+1)
     hist = StatsBase.Histogram(edges,as.channels)
-    @show hist
+    # @show hist
     return hist
 end
 function get_sub_histogram(as::AlphaSpectrum) 
