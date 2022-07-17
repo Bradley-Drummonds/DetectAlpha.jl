@@ -21,7 +21,7 @@ include("../src/Utils.jl")
     # # e
     peaks = DetectAlpha.find_peaks(alphaspectrum)
     @test length(peaks) > 0
-    
+    @show peaks 
 end
 
 @testset "Utils.jl" begin
