@@ -4,7 +4,7 @@ export example_alpha_spectrum, to_histogram,to_energy_linearrange
 
 abstract type Spectrum end
 
-find_peak(s::Spectrum) = []
+fit_peak_in_range(r::AbstractRange, s::Spectrum) = []
 slice(s::Spectrum) = Spectrum()
 to_histogram(s::Spectrum) = nothing
 to_energy_linearrange(chsteprange::StepRange,energyrange::NamedTuple{(:max,:min)}) = nothing

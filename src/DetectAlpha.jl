@@ -1,5 +1,5 @@
 module DetectAlpha
-export find_peak,find_peaks,alphamodel,valid_peak
+export fit_peak_in_range,find_peaks,alphamodel,valid_peak
 
 using CSV
 using DataFrames
@@ -55,7 +55,7 @@ valid_peak(pk1::Peak) = pk1.channel != typemin(Int32) &&
 """ 
 find a peak within a certain channel range of a AlphaSpectrum
 """
-function find_peak(channelrange::StepRange,as::AlphaSpectrum)
+function fit_peak_in_range(channelrange::StepRange,as::AlphaSpectrum)
     #get the channels from the range
 
     if last(channelrange) <= length(as.channels) #issubset(channels,as.channels)
