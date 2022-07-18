@@ -1,6 +1,7 @@
 using DetectAlpha
 using Test
 using Revise
+using Plots
 include("../src/Utils.jl")
 
 @testset "DetectAlpha.jl" begin
@@ -19,7 +20,7 @@ include("../src/Utils.jl")
     # for spectrum in spectra
     #     find_peaks(spectrum)
     # # e
-    peaks = DetectAlpha.find_peaks(alphaspectrum)
+    peaks,h_alpha = DetectAlpha.find_peaks(alphaspectrum)
     @test length(peaks) > 0
     @show peaks 
 end
@@ -40,5 +41,8 @@ end
 
     @test_throws BoundsError fit_peak_in_range(StepRange(1,1,5128),alphaspectrum)
 
-    @test !valid_peak(fit_peak_in_range(StepRange(Int32(1),Int32(1),Int32(128)),alphaspectrum)) 
+    # @test !valid_peak(fit_peak_in_range(StepRange(Int32(1),Int32(1),Int32(128)),alphaspectrum)) 
+    h_strongest = find_and_fit_peaks(AlphaSpectrumDensity,alphaspectrum)
+    @test h_strongest !== nothing
+    plot(h_strongest,st=:step,size=(800,400))
 end

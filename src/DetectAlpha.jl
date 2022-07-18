@@ -1,5 +1,6 @@
 module DetectAlpha
-export fit_peak_in_range,find_peaks,alphamodel,valid_peak
+export fit_peak_in_range,find_peaks,alphamodel,valid_peak,find_and_fit_peaks,
+        AlphaSpectrumDensity
 
 using CSV
 using DataFrames
@@ -71,9 +72,11 @@ function fit_peak_in_range(channelrange::StepRange,as::AlphaSpectrum)
         linenergyrange = to_energy_linearrange(channelrange,energyrange)
         RadiationSpectra.subhist(ashist,(linenergyrange.start,linenergyrange.stop))
 
+
         #need to figure out the low and high values of the parameters of the 
         #alpha model
         # lsqfit!(fitfunc, ashist)
+        fit(AlphaSpectrumDensity,)
         return Peak() 
     else
         throw(BoundsError())
@@ -86,9 +89,25 @@ detect peaks in a alpha spectrum, using deconvolution
 """
 function find_peaks(as::AlphaSpectrum)
     h_alpha = to_histogram(as)
-    h_decon, peaks = RadiationSpectra.peakfinder(h_alpha; σ=10.0) #using spectrum deconvolution
-    return peaks
+    h_decon, peaks = RadiationSpectra.peakfinder(h_alpha; σ=9.0) #using spectrum deconvolution
+    return peaks,h_alpha
 end
 
+function find_and_fit_peaks(m,as::AlphaSpectrum)
+    peaks,h_alpha = find_peaks(as)
+    strongest_peak_bin_idx = StatsBase.binindex(h_alpha,peaks[1])
+    @show strongest_peak_bin_idx
+    strongest_peak_bin_width = StatsBase.binvolume(h_alpha,strongest_peak_bin_idx)
+    @show strongest_peak_bin_width
+    strongest_peak_bin_amp = h_alpha.weights[strongest_peak_bin_idx]
+    @show strongest_peak_bin_amp
+
+    peak_h_sub = RadiationSpectra.subhist(h_alpha,(peaks[1]-strongest_peak_bin_width * 20,
+                                peaks[1] + strongest_peak_bin_width * 20))
+    @show typeof(m)
+    p0 = ()
+    # fit(model,)
+    return peak_h_sub
+end
 
 end #end module DetectAlpha
