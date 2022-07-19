@@ -93,17 +93,27 @@ function find_peaks(as::AlphaSpectrum)
     return peaks,h_alpha
 end
 
+function find_peak_ranges(peaks,h_alpha::Histogram)
+    num_peaks = length(peaks)
+    peak_ranges = Vector{StepRange}(undef,num_peaks)
+    return peak_ranges
+end
+
 function find_and_fit_peaks(m,as::AlphaSpectrum)
     peaks,h_alpha = find_peaks(as)
     strongest_peak_bin_idx = StatsBase.binindex(h_alpha,peaks[1])
-    @show strongest_peak_bin_idx
+    # @show strongest_peak_bin_idx
     strongest_peak_bin_width = StatsBase.binvolume(h_alpha,strongest_peak_bin_idx)
-    @show strongest_peak_bin_width
+    # @show strongest_peak_bin_width
     strongest_peak_bin_amp = h_alpha.weights[strongest_peak_bin_idx]
-    @show strongest_peak_bin_amp
+    # @show strongest_peak_bin_amp
 
-    peak_h_sub = RadiationSpectra.subhist(h_alpha,(peaks[1]-strongest_peak_bin_width * 20,
-                                peaks[1] + strongest_peak_bin_width * 20))
+    peak_ranges = find_peak_ranges(peaks,h_alpha)
+    for peak_range in peak_range
+        peak_tuple = (peak_range.start,peak_range.stop)
+        peak_h_sub = RadiationSpectra.subhist(h_alpha,peak_tuple)
+    end
+    
     @show typeof(m)
     p0 = ()
     # fit(model,)
