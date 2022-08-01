@@ -7,6 +7,7 @@ using DataFrames
 using RadiationSpectra
 using StatsBase
 using Plots
+using Revise
 
 TEST = true
 DEBUG = true
@@ -95,7 +96,47 @@ end
 
 function find_peak_ranges(peaks,h_alpha::Histogram)
     num_peaks = length(peaks)
+    spect_extrema = [StatsBase.binindex(h_alpha,p) for p in peaks]
+
+    prepend!(spect_extrema,1)
+    append!(spect_extrema,length(h_alpha.edges[1]))
+
     peak_ranges = Vector{StepRange}(undef,num_peaks)
+    range_index = 1
+    
+    @show spect_extrema
+    min_ch_range = spect_extrema[1]
+    min_ch_peak_range = min_ch_range
+    min_channel = 1
+    for i in eachindex(spect_extrema)
+        if i == 1
+            continue
+        elseif i > 2 
+            min_ch_peak_range = min_channel
+        end
+
+        max_ch_range = spect_extrema[i]
+        range_min_max_tuple = (min_ch_range,max_ch_range)
+        @show range_min_max_tuple
+        h_alpha_sub = RadiationSpectra.subhist(h_alpha,range_min_max_tuple)
+
+        min_counts,min_channel = findmin(h_alpha_sub.weights)
+        last_min_count = findlast(ct->ct==min_counts,h_alpha_sub.weights)
+
+        min_channel = last_min_count + min_ch_range
+        @show last_min_count
+        @show min_counts
+        @show min_channel
+
+        if i > 2 
+            max_ch_peak_range = min_channel
+            sr = StepRange(min_ch_peak_range,1,max_ch_peak_range)
+            peak_ranges[range_index] = sr
+            range_index = range_index + 1
+        end
+
+        min_ch_range = max_ch_range
+    end
     return peak_ranges
 end
 
@@ -108,16 +149,17 @@ function find_and_fit_peaks(m,as::AlphaSpectrum)
     strongest_peak_bin_amp = h_alpha.weights[strongest_peak_bin_idx]
     # @show strongest_peak_bin_amp
 
-    peak_ranges = find_peak_ranges(peaks,h_alpha)
-    for peak_range in peak_range
+    peak_ranges = find_peak_ranges(sort(peaks),h_alpha)
+    @show peak_ranges
+    for peak_range in peak_ranges
+        @show peak_range
         peak_tuple = (peak_range.start,peak_range.stop)
         peak_h_sub = RadiationSpectra.subhist(h_alpha,peak_tuple)
     end
     
-    @show typeof(m)
     p0 = ()
     # fit(model,)
-    return peak_h_sub
+    # return peak_h_sub
 end
 
 end #end module DetectAlpha
