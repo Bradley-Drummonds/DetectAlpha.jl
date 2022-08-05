@@ -1,6 +1,7 @@
 export Spectrum, AlphaSpectrum
 export AlphaSpectrum
 export example_alpha_spectrum, to_histogram,to_energy_linearrange
+export get_num_channels
 
 abstract type Spectrum end
 
@@ -39,6 +40,7 @@ struct AlphaSpectrum <: Spectrum
     end
 end
 
+get_num_channels() = 512
 # abstract type SpectrumSource end 
 # get_spectra(source::SpectrumSource) = Vector{Spectrum}
 # alphaDataFrame = CSV.File("/home/b/Data/Spectra/Alpha2.csv"; header=false) |> DataFrame

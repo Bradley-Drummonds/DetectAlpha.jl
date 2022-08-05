@@ -8,6 +8,8 @@ using RadiationSpectra
 using StatsBase
 using Plots
 using Revise
+using Statistics
+using SpecialFunctions
 
 TEST = true
 DEBUG = true
@@ -31,19 +33,35 @@ struct Peak
     end
 end
 
-struct AlphaSpectrumDensity{T} <: RadiationSpectra.AbstractSpectrumDensity{T,1}
+struct AlphaSpectrumDensity{T} <: RadiationSpectra.UvSpectrumDensity{T}
     μ::T
     σ::T
     τ::T
     A::T
-    function AlphaSpectrumDensity(nt::NamedTuple{(:μ,:σ,:τ,:A)}) 
-        T = promote_type(typeof.(values(nt)))
-        new{T}(T(nt.μ),T(nt.σ),T(nt.τ),T(nt.A))
+end
+
+function AlphaSpectrumDensity(nt::NamedTuple{(:μ,:σ,:τ,:A)}) 
+    T = promote_type(typeof.(values(nt))...)
+    AlphaSpectrumDensity(T(nt.μ),T(nt.σ),T(nt.τ),T(nt.A))
+end
+
+function get_variable_limits(varnam::Symbol)::NamedTuple{(:min,:max), Tuple{Float64,Float64}}
+    if varnam == :μ
+        return (min = 0.0,max = Float64(DetectAlpha.get_num_channels()))
+    elseif varnam == :σ
+        return (min = 0.2, max = 10000.0)
+    elseif varnam == :τ
+        return (min = 1.0, max = 10000.0)
+    elseif varnam == :A
+        return (min = 0.1, max = typemax(Float64))
     end
 end
 
+lower_bounds() = NamedTuple{(:μ,:σ,:τ,:A)}(Tuple(get_variable_limits(sym).min for sym in [:μ :σ :τ :A])) 
+upper_bounds() = NamedTuple{(:μ,:σ,:τ,:A)}(Tuple(get_variable_limits(sym).max for sym in [:μ :σ :τ :A]))
+
 function RadiationSpectra.evaluate(d::AlphaSpectrumDensity, x)
-    amp = d.A / 2τ 
+    amp = d.A / (2 * d.τ )
     oneOverSqrt2 = 1.0 / √2 
     sigScaledByTau  = d.σ / d.τ  
     return amp * exp((x - d.μ ) / d.τ + (sigScaledByTau^2) ) * 
@@ -55,33 +73,22 @@ valid_peak(pk1::Peak) = pk1.channel != typemin(Int32) &&
     first(pk1.range) != typemin(Int32)
 
 """ 
-find a peak within a certain channel range of a AlphaSpectrum
+fit a peak within a sub historgram and starting coefs 
 """
-function fit_peak_in_range(channelrange::StepRange,as::AlphaSpectrum)
-    #get the channels from the range
-
-    if last(channelrange) <= length(as.channels) #issubset(channels,as.channels)
-        # println("channelrange is within alpha spectrum channel arrays") 
-        # v = view(as.channels,channelrange)
-        # @show v
-        # set_initial_parameters!(fitfunc,( μ = 256.0, σ = 15.0, τ = 4.2, A = 10000.0))
-
-        ashist = to_histogram(as)
-        startenergy = as.energies[channelrange.start]
-        endenergy = as.energies[channelrange.stop] 
-        energyrange = (min = startenergy,max = endenergy)
-        linenergyrange = to_energy_linearrange(channelrange,energyrange)
-        RadiationSpectra.subhist(ashist,(linenergyrange.start,linenergyrange.stop))
-
-
+function fit_peak_in_range(peakHist::Histogram,startcoefs)
         #need to figure out the low and high values of the parameters of the 
         #alpha model
-        # lsqfit!(fitfunc, ashist)
-        fit(AlphaSpectrumDensity,)
+        # lb = lower_bounds()
+        lb = (μ = 0.0,σ = 0.2,τ = 1.0,A = 0.1)
+        @show lb
+        ub = (μ = 4096.0, σ = 1000.0,τ = 1000.0, A = 1000000.0)
+        # ub = upper_bounds()
+        @show ub
+        p0 = startcoefs
+
+        fitted_dens, backend_result = fit(AlphaSpectrumDensity,peakHist,p0,lb,ub)
+        @show fitted_dens
         return Peak() 
-    else
-        throw(BoundsError())
-    end
 end
 
 
@@ -155,6 +162,10 @@ function find_and_fit_peaks(m,as::AlphaSpectrum)
         @show peak_range
         peak_tuple = (peak_range.start,peak_range.stop)
         peak_h_sub = RadiationSpectra.subhist(h_alpha,peak_tuple)
+        # μ_start = round(Float64,middle_value(peak_range))
+        μ_start = median(peak_range)
+
+        fit_peak_in_range(peak_h_sub,(μ = μ_start,σ = 1.25, τ = 10.0,A = 3000))
     end
     
     p0 = ()

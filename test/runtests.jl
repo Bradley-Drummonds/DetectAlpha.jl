@@ -39,7 +39,7 @@ end
     hs = DetectAlpha.to_histogram(alphaspectrum)
     @test hs !== nothing
 
-    @test_throws BoundsError fit_peak_in_range(StepRange(1,1,5128),alphaspectrum)
+    # @test_throws BoundsError fit_peak_in_range(StepRange(1,1,5128),alphaspectrum)
 
     # @test !valid_peak(fit_peak_in_range(StepRange(Int32(1),Int32(1),Int32(128)),alphaspectrum)) 
     h_strongest = find_and_fit_peaks(AlphaSpectrumDensity,alphaspectrum)
