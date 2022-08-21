@@ -79,15 +79,20 @@ function fit_peak_in_range(peakHist::Histogram,startcoefs)
         #need to figure out the low and high values of the parameters of the 
         #alpha model
         # lb = lower_bounds()
-        lb = (μ = 0.0,σ = 0.2,τ = 1.0,A = 0.1)
+        edges = peakHist.edges
+        startEdge = edges[1]; lastEdge = edges[end];
+        @show startEdge[1]
+        @show lastEdge
+        lb = (μ = startEdge[1],σ = 0.2,τ = 1.0,A = 0.1)
         @show lb
-        ub = (μ = 4096.0, σ = 1000.0,τ = 1000.0, A = 1000000.0)
+        ub = (μ = startEdge[end], σ = 1000.0,τ = 1000.0, A = 10000000000.0)
         # ub = upper_bounds()
         @show ub
         p0 = startcoefs
-
+        @show p0
         fitted_dens, backend_result = fit(AlphaSpectrumDensity,peakHist,p0,lb,ub)
         @show fitted_dens
+        @show backend_result
         return Peak() 
 end
 
@@ -131,9 +136,9 @@ function find_peak_ranges(peaks,h_alpha::Histogram)
         last_min_count = findlast(ct->ct==min_counts,h_alpha_sub.weights)
 
         min_channel = last_min_count + min_ch_range
-        @show last_min_count
-        @show min_counts
-        @show min_channel
+        # @show last_min_count
+        # @show min_counts
+        # @show min_channel
 
         if i > 2 
             max_ch_peak_range = min_channel
@@ -149,28 +154,30 @@ end
 
 function find_and_fit_peaks(m,as::AlphaSpectrum)
     peaks,h_alpha = find_peaks(as)
+    @show peaks
     strongest_peak_bin_idx = StatsBase.binindex(h_alpha,peaks[1])
-    # @show strongest_peak_bin_idx
+    @show strongest_peak_bin_idx
     strongest_peak_bin_width = StatsBase.binvolume(h_alpha,strongest_peak_bin_idx)
-    # @show strongest_peak_bin_width
+    @show strongest_peak_bin_width
     strongest_peak_bin_amp = h_alpha.weights[strongest_peak_bin_idx]
-    # @show strongest_peak_bin_amp
+    @show strongest_peak_bin_amp
 
     peak_ranges = find_peak_ranges(sort(peaks),h_alpha)
     @show peak_ranges
-    for peak_range in peak_ranges
+    for (p0_ch,peak_range) in zip(sort(peaks),peak_ranges)
         @show peak_range
+        @show p0_ch
         peak_tuple = (peak_range.start,peak_range.stop)
         peak_h_sub = RadiationSpectra.subhist(h_alpha,peak_tuple)
+        # @show peak_h_sub
         # μ_start = round(Float64,middle_value(peak_range))
-        μ_start = median(peak_range)
-
-        fit_peak_in_range(peak_h_sub,(μ = μ_start,σ = 1.25, τ = 10.0,A = 3000))
+        # μ_start = median(peak_range)
+        peakIndex = StatsBase.binindex(peak_h_sub,p0_ch)
+        probableAmp = peak_h_sub.weights[peakIndex] * 3000
+        @show probableAmp
+        fit_peak_in_range(peak_h_sub,(μ = p0_ch,σ = 4.25, τ = 70.0,A = probableAmp))
     end
     
-    p0 = ()
-    # fit(model,)
-    # return peak_h_sub
 end
 
 end #end module DetectAlpha
