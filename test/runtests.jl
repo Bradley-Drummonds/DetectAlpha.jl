@@ -38,11 +38,16 @@ end
     alphaspectrum = DetectAlpha.example_alpha_spectrum()   
     hs = DetectAlpha.to_histogram(alphaspectrum)
     @test hs !== nothing
-    @show hs
+    # @show hs
     # @test_throws BoundsError fit_peak_in_range(StepRange(1,1,5128),alphaspectrum)
 
     # @test !valid_peak(fit_peak_in_range(StepRange(Int32(1),Int32(1),Int32(128)),alphaspectrum)) 
-    h_strongest = find_and_fit_peaks(AlphaSpectrumDensity,alphaspectrum)
+    p0s = AlphaSpectrumDensity{Float64}[]
+    h_strongest = find_and_fit_peaks(AlphaSpectrumDensity,alphaspectrum,p0s)
     @test h_strongest !== nothing
     # plot(h_strongest,st=:step,size=(800,400))
+end
+
+@testset "DecaySeries" begin
+    @test length(U238DecaySeries) == 2
 end

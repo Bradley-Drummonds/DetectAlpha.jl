@@ -79,3 +79,6 @@ function example_alpha_spectrum()
     return first(read_alpha_spectrum_file(asdatafile))
 end
 
+function get_propable_background_isotopes()::Vector{Isotope}
+    return Isotope[Isotope(84,218),Isotope(84,214)]
+end

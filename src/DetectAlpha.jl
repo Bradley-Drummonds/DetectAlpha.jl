@@ -81,8 +81,8 @@ function fit_peak_in_range(peakHist::Histogram,startcoefs)
         # lb = lower_bounds()
         edges = peakHist.edges
         startEdge = edges[1]; lastEdge = edges[end];
-        @show startEdge[1]
-        @show lastEdge
+        # @show startEdge[1]
+        # @show lastEdge
         lb = (μ = startEdge[1],σ = 0.2,τ = 1.0,A = 0.1)
         @show lb
         ub = (μ = startEdge[end], σ = 1000.0,τ = 1000.0, A = 10000000000.0)
@@ -152,21 +152,22 @@ function find_peak_ranges(peaks,h_alpha::Histogram)
     return peak_ranges
 end
 
-function find_and_fit_peaks(m,as::AlphaSpectrum)
+function find_and_fit_peaks(m,as::AlphaSpectrum,p0s)
     peaks,h_alpha = find_peaks(as)
     @show peaks
-    strongest_peak_bin_idx = StatsBase.binindex(h_alpha,peaks[1])
-    @show strongest_peak_bin_idx
-    strongest_peak_bin_width = StatsBase.binvolume(h_alpha,strongest_peak_bin_idx)
-    @show strongest_peak_bin_width
-    strongest_peak_bin_amp = h_alpha.weights[strongest_peak_bin_idx]
-    @show strongest_peak_bin_amp
+    # strongest_peak_bin_idx = StatsBase.binindex(h_alpha,peaks[1])
+    # @show strongest_peak_bin_idx
+    # strongest_peak_bin_width = StatsBase.binvolume(h_alpha,strongest_peak_bin_idx)
+    # @show strongest_peak_bin_width
+    # strongest_peak_bin_amp = h_alpha.weights[strongest_peak_bin_idx]
+    # @show strongest_peak_bin_amp
 
     peak_ranges = find_peak_ranges(sort(peaks),h_alpha)
     @show peak_ranges
-    for (p0_ch,peak_range) in zip(sort(peaks),peak_ranges)
+    for (p0_ch,peak_range,p0) in zip(sort(peaks),peak_ranges,p0s)
         @show peak_range
         @show p0_ch
+        @show p0
         peak_tuple = (peak_range.start,peak_range.stop)
         peak_h_sub = RadiationSpectra.subhist(h_alpha,peak_tuple)
         # @show peak_h_sub
