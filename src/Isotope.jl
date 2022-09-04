@@ -1,6 +1,7 @@
 
 
-export Radiation, Elements, Isotope, U238DecaySeries
+export Radiation, Elements, Isotope, U238DecaySeries,DecayType, α, β, γ, n, Pb214, U238,
+    U238Decay, Pb210
 
 @enum DecayType α β γ n
 # Write your package code here.
@@ -83,9 +84,13 @@ struct Decay
     parent::Isotope
     daughters::Vector{DaughterType}
 end
+Base.isequal(dt1::DaughterType,dt2::DaughterType) = dt1.ratio == dt2.ratio && dt1.decay_type == dt2.decay_type && dt1.disotope == dt2.disotope
+
 u238Daughters = DaughterType[(ratio = 1.0,decay_type = α,disotope = Pb214),
     (ratio = 1.0,decay_type = α,disotope = Pb210)]
 U238Decay = Decay(U238,u238Daughters)
+Base.iterate(d::Decay) = Base.iterate(d.daughters)
+Base.iterate(d::Decay,state) = Base.iterate(d.daughters,state)
 
 struct DecaySeries
     parent::Decay
@@ -93,4 +98,5 @@ end
 
 U238DecaySeries = DecaySeries(U238Decay)
 Base.length(ds::DecaySeries) = length(ds.parent.daughters)
-
+Base.iterate(ds::DecaySeries) = iterate(ds.parent)
+Base.iterate(ds::DecaySeries,state) = iterate(ds.parent,state)

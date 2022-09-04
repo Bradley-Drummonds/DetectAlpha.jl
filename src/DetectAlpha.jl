@@ -155,13 +155,18 @@ end
 function find_and_fit_peaks(m,as::AlphaSpectrum,p0s)
     peaks,h_alpha = find_peaks(as)
     @show peaks
+    num_suspected_peaks = length(peaks)
+    if num_suspected_peaks == 0
+        @debug "find_and_fit_peaks, no suspected peaks found"
+    end
+    return_peaks = Vector{Peak}(undef,num_suspected_peaks)
     # strongest_peak_bin_idx = StatsBase.binindex(h_alpha,peaks[1])
     # @show strongest_peak_bin_idx
     # strongest_peak_bin_width = StatsBase.binvolume(h_alpha,strongest_peak_bin_idx)
     # @show strongest_peak_bin_width
     # strongest_peak_bin_amp = h_alpha.weights[strongest_peak_bin_idx]
     # @show strongest_peak_bin_amp
-
+    index = 1
     peak_ranges = find_peak_ranges(sort(peaks),h_alpha)
     @show peak_ranges
     for (p0_ch,peak_range,p0) in zip(sort(peaks),peak_ranges,p0s)
@@ -176,9 +181,10 @@ function find_and_fit_peaks(m,as::AlphaSpectrum,p0s)
         peakIndex = StatsBase.binindex(peak_h_sub,p0_ch)
         probableAmp = peak_h_sub.weights[peakIndex] * 3000
         @show probableAmp
-        fit_peak_in_range(peak_h_sub,(μ = p0_ch,σ = 4.25, τ = 70.0,A = probableAmp))
+        fitted_peak = fit_peak_in_range(peak_h_sub,(μ = p0_ch,σ = 4.25, τ = 70.0,A = probableAmp))
+        return_peaks[index] = fitted_peak 
     end
-    
+    return return_peaks
 end
 
 end #end module DetectAlpha

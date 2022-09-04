@@ -50,4 +50,12 @@ end
 
 @testset "DecaySeries" begin
     @test length(U238DecaySeries) == 2
+
+    @testset "test U238 decay series" begin
+        next = iterate(U238DecaySeries)
+        @test next !== nothing 
+        pb214Decay = (ratio = 1.0,decay_type = α,disotope = Pb214)
+        (next_decay,state) = next
+        @test next_decay == pb214Decay
+    end
 end
