@@ -99,7 +99,7 @@ struct DecaySeries
 end
 
 U238DecaySeries = DecaySeries(U238Decay)
-Base.collect(ds::DecaySeries) = collect(Iterators.flatten([decay.daughters for decay in ds.parent]))
+Base.collect(ds::DecaySeries) = collect([decay for decay in ds.parent])
 Base.length(ds::DecaySeries) = length([decay for decay in ds.parent])
 Base.iterate(ds::DecaySeries) = iterate([decay for decay in ds.parent])
 Base.iterate(ds::DecaySeries,state) = iterate([decay for decay in ds.parent],state)

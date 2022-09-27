@@ -81,6 +81,6 @@ function example_alpha_spectrum()
 end
 
 function get_probable_background_isotopes()::Vector{Isotope}
-    return Isotope[Isotope(84,218),Isotope(84,214)]
-    # return collect(Iterators.flatten(U238DecaySeries))
+    # return Isotope[Isotope(84,218),Isotope(84,214)]
+    return collect([decay.disotope for decay in U238DecaySeries])
 end
