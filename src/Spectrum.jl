@@ -1,6 +1,7 @@
 export Spectrum, AlphaSpectrum
 export AlphaSpectrum
-export example_alpha_spectrum, to_histogram,to_energy_linearrange
+export example_alpha_spectrum, to_histogram,to_energy_linearrange, 
+        get_probable_background_isotopes
 export get_num_channels
 
 abstract type Spectrum end
@@ -79,7 +80,7 @@ function example_alpha_spectrum()
     return first(read_alpha_spectrum_file(asdatafile))
 end
 
-function get_propable_background_isotopes()::Vector{Isotope}
-    # return Isotope[Isotope(84,218),Isotope(84,214)]
-    return U238DecaySeries
+function get_probable_background_isotopes()::Vector{Isotope}
+    return Isotope[Isotope(84,218),Isotope(84,214)]
+    # return collect(Iterators.flatten(U238DecaySeries))
 end

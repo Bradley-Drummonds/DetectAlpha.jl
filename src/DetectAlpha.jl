@@ -10,6 +10,8 @@ using Plots
 using Revise
 using Statistics
 using SpecialFunctions
+using FilePaths
+using FilePathsBase: / 
 
 TEST = true
 DEBUG = true

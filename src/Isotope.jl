@@ -13,7 +13,7 @@ end
 
 struct Elements
     file
-    Elements() = new(CSV.File("../Elements.csv"))
+    Elements() = new(CSV.File(parent(cwd()) / "Elements.csv"))
 end
 get_iso_row(z::Int,elems::Elements) = elems.file[elems.file.AtomicNumber .== z,:]
 get_iso_row(z::Int) = get_iso_row(z,Elements())
@@ -89,14 +89,17 @@ Base.isequal(dt1::DaughterType,dt2::DaughterType) = dt1.ratio == dt2.ratio && dt
 u238Daughters = DaughterType[(ratio = 1.0,decay_type = α,disotope = Pb214),
     (ratio = 1.0,decay_type = α,disotope = Pb210)]
 U238Decay = Decay(U238,u238Daughters)
-Base.iterate(d::Decay) = Base.iterate(d.daughters)
-Base.iterate(d::Decay,state) = Base.iterate(d.daughters,state)
+Base.iterate(d::Decay) = iterate(d.daughters)
+Base.iterate(d::Decay,state) = iterate(d.daughters,state)
+Base.length(d::Decay) = length(d.daughters)
+Base.collect(d::Decay) = collect(d.daughters)
 
 struct DecaySeries
     parent::Decay
 end
 
 U238DecaySeries = DecaySeries(U238Decay)
-Base.length(ds::DecaySeries) = length(ds.parent.daughters)
-Base.iterate(ds::DecaySeries) = iterate(ds.parent)
-Base.iterate(ds::DecaySeries,state) = iterate(ds.parent,state)
+Base.collect(ds::DecaySeries) = collect(Iterators.flatten([decay.daughters for decay in ds.parent]))
+Base.length(ds::DecaySeries) = length([decay for decay in ds.parent])
+Base.iterate(ds::DecaySeries) = iterate([decay for decay in ds.parent])
+Base.iterate(ds::DecaySeries,state) = iterate([decay for decay in ds.parent],state)

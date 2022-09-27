@@ -57,5 +57,9 @@ end
         pb214Decay = (ratio = 1.0,decay_type = α,disotope = Pb214)
         (next_decay,state) = next
         @test next_decay == pb214Decay
+
+        background_isos = get_probable_background_isotopes()
+        @test background_isos !== nothing 
+        @test length(background_isos) == 2
     end
 end
